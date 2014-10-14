@@ -12,13 +12,14 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
-public class HelloServer {
+public class HelloServer implements Runnable {
 
-	public static void main(String args[]) {
-		ServerBootstrap bootstrap = new ServerBootstrap(
-				new NioServerSocketChannelFactory(
-						Executors.newCachedThreadPool(),
-						Executors.newCachedThreadPool()));
+	private ServerBootstrap bootstrap;
+
+	public void run() {
+		bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
+				Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool()));
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -34,7 +35,7 @@ public class HelloServer {
 				ChannelStateEvent e) {
 			System.out.println("Hello, Server World!");
 		}
-		
+
 		public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) {
 			System.out.println("Goodbye, Server World!");
 		}

@@ -12,13 +12,14 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 
-public class HelloClient {
+public class HelloClient implements Runnable {
 
-	public static void main(String args[]) {
-		ClientBootstrap bootstrap = new ClientBootstrap(
-				new NioClientSocketChannelFactory(
-						Executors.newCachedThreadPool(),
-						Executors.newCachedThreadPool()));
+	private ClientBootstrap bootstrap;
+
+	public void run() {
+		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
+				Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool()));
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -27,16 +28,13 @@ public class HelloClient {
 		});
 		bootstrap.connect(new InetSocketAddress("127.0.0.1", 8000));
 	}
-
+	
 	private static class HelloClientHandler extends SimpleChannelHandler {
-
 		@Override
 		public void channelConnected(ChannelHandlerContext ctx,
 				ChannelStateEvent e) {
 			System.out.println("Hello, Client World!");
-			ctx.getChannel().close();
 		}
 
-	
 	}
 }
